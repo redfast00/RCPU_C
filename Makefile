@@ -10,7 +10,7 @@ LDFLAGS =
 # use this command to erase files.
 RM = /bin/rm -f
 # list of generated object files.
-OBJS = main.o emulate.o
+OBJS = main.o emulate.o stack.o
 # program executable file name.
 PROG = emulate_rcpu
 

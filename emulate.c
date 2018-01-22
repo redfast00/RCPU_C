@@ -2,29 +2,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "constants.h"
+#include "stack.h"
 
 int error = 0;
-
-void stack_push(uint16_t* stack, uint16_t* stack_pointer, uint16_t value) {
-  (*stack_pointer)++;
-  if (*stack_pointer < STACKSIZE) {
-    stack[*stack_pointer] = value;
-  }
-  else {
-    error = ERR_STACK_OVERFLOW;
-  }
-}
-
-uint16_t stack_pop(uint16_t* stack, uint16_t* stack_pointer) {
-  if ((*stack_pointer) == 0) {
-    error = ERR_STACK_UNDERFLOW;
-    return 0;
-  }
-  else {
-    (*stack_pointer)--;
-    return stack[(*stack_pointer)];
-  }
-}
 
 uint16_t ath(uint8_t ath_operation, uint8_t ath_shift_amount, uint16_t source, uint16_t destination) {
   switch (ath_operation) {
@@ -139,14 +119,14 @@ int emulate(uint16_t* memory) {
 
       case 0b0111: // CAL
         // Push instruction pointer onto the stack, so we can return to it later on
-        stack_push(stack, &stack_pointer, instruction_pointer);
+        stack_push(stack, &stack_pointer, instruction_pointer, &error);
         // Minus one because the instruction pointer will be incremented at the end of each instruction
         instruction_pointer = registers[destination] - 1;
       break;
 
       case 0b1000: // RET
         // Pop return address from stack
-        instruction_pointer = stack_pop(stack, &stack_pointer);
+        instruction_pointer = stack_pop(stack, &stack_pointer, &error);
       break;
 
       case 0b1001: // JLT
@@ -156,11 +136,11 @@ int emulate(uint16_t* memory) {
       break;
 
       case 0b1010: // PSH
-        stack_push(stack, &stack_pointer, registers[source]);
+        stack_push(stack, &stack_pointer, registers[source], &error);
       break;
 
       case 0b1011: // POP
-        registers[destination] = stack_pop(stack, &stack_pointer);
+        registers[destination] = stack_pop(stack, &stack_pointer, &error);
       break;
 
       case 0b1100: // SYS
