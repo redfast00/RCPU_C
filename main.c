@@ -28,7 +28,6 @@ int main() {
     }
       fread(emulator_memory, 2, sz, executable);
       fclose(executable);
-      emulate(emulator_memory);
+      return emulate(emulator_memory);
     }
-  return 0;
 }
