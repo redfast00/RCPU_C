@@ -11,5 +11,6 @@
 // Emulator error codes
 #define ERR_STACK_OVERFLOW 3
 #define ERR_STACK_UNDERFLOW 4
+#define ERR_ATH_SUBINSTRUCTION 5
 
 #endif /* CONSTANTS_H */

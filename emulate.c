@@ -26,6 +26,63 @@ uint16_t stack_pop(uint16_t* stack, uint16_t* stack_pointer) {
   }
 }
 
+uint16_t ath(uint8_t ath_operation, uint8_t ath_shift_amount, uint16_t source, uint16_t destination) {
+  switch (ath_operation) {
+    case 0b0000: // ADD
+      return destination + source;
+    break;
+
+    case 0b0001: // SUB
+      return destination - source;
+    break;
+
+    case 0b0010: // MUL
+      return destination * source;
+    break;
+
+    case 0b0011: // DIV
+      return destination / source;
+    break;
+
+    case 0b0100: // LSH
+      return source << ath_shift_amount;
+    break;
+
+    case 0b0101: // RSH
+      return source >> ath_shift_amount;
+    break;
+
+    case 0b0110: // AND
+      return destination & source;
+    break;
+
+    case 0b0111: // OR
+      return destination | source;
+    break;
+
+    case 0b1000: // XOR
+      return destination ^ source;
+    break;
+
+    case 0b1001: // NOT
+      return ~source;
+    break;
+
+    case 0b1010: // INC
+      return destination + 1;
+    break;
+
+    case 0b1011: // DEC
+      return destination - 1;
+    break;
+
+    default:
+      printf("ATH subinstruction not implemented.\n");
+      error = ERR_ATH_SUBINSTRUCTION;
+      return 0;
+  }
+}
+
 int emulate(uint16_t* memory) {
   uint16_t registers[1 << 2];
   uint16_t instruction_pointer = 0;
@@ -42,7 +99,7 @@ int emulate(uint16_t* memory) {
     uint8_t source = (current_instruction >> 6) & 0b11;
     uint16_t large_address = current_instruction >> 6;
     uint8_t ath_operation = (current_instruction >> 8) & 0b1111;
-    bool ath_mode = (current_instruction >> 12) & 0b1;
+    bool ath_store_in_src = (current_instruction >> 12) & 0b1;
     uint8_t ath_shift_amount = (current_instruction >> 13) & 0b111;
     // Execute instruction
     switch (opcode) {
@@ -71,7 +128,13 @@ int emulate(uint16_t* memory) {
       break;
 
       case 0b0110: // ATH
-        // TODO
+        ; // because C... https://stackoverflow.com/a/46341408/5431090
+        uint16_t result = ath(ath_operation, ath_shift_amount, registers[source], registers[destination]);
+        if (ath_store_in_src) {
+          registers[source] = result;
+        } else {
+          registers[destination] = result;
+        }
       break;
 
       case 0b0111: // CAL
