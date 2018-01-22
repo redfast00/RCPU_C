@@ -2,9 +2,9 @@
 #include "constants.h"
 
 void stack_push(uint16_t* stack, uint16_t* stack_pointer, uint16_t value, int* error) {
-  (*stack_pointer)++;
   if (*stack_pointer < STACKSIZE) {
     stack[*stack_pointer] = value;
+    (*stack_pointer)++;
   }
   else {
     *error = ERR_STACK_OVERFLOW;
