@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "constants.h"
 #include "stack.h"
+#include "syscall.h"
 
 int error = 0;
 
@@ -144,8 +145,7 @@ int emulate(uint16_t* memory) {
       break;
 
       case 0b1100: // SYS
-        // TODO
-        printf("Syscall not implemented yet\n");
+        syscall(memory, stack, &stack_pointer, &error);
       break;
 
       case 0b1101: // HLT
@@ -154,7 +154,7 @@ int emulate(uint16_t* memory) {
       break;
 
       case 0b1110: // JMP
-        instruction_pointer = large_address;
+        instruction_pointer = large_address - 1;
       break;
 
       case 0b1111: // JMR

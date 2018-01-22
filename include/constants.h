@@ -12,5 +12,9 @@
 #define ERR_STACK_OVERFLOW 3
 #define ERR_STACK_UNDERFLOW 4
 #define ERR_ATH_SUBINSTRUCTION 5
+#define ERR_SYSCALL_PRINTF_FMT_STRING 6
+#define ERR_SYSCALL_UNKNOWN 7
 
+// Not implemented error codes
+#define ERR_NOT_IMPLEMENTED 101
 #endif /* CONSTANTS_H */
