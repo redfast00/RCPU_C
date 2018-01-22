@@ -12,9 +12,17 @@ int filesize(FILE* fp) {
   return sz;
 }
 
-int main() {
+void printUsage() {
+  printf("Usage: emulate_rcpu <executable>\n");
+}
+
+int main(int argc, char *argv[]) {
+  if (argc != 2) {
+    printUsage();
+    return ERR_FILE_ACCESS;
+  }
   FILE *executable;
-  executable = fopen("asm/printf.out", "r");
+  executable = fopen(argv[1], "r");
 
   if (executable == NULL) {
     printf("File could not be opened\n");
